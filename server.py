@@ -22,7 +22,7 @@
 
 
 import flask
-from flask import Flask, request, render_template
+from flask import Flask, request
 import json
 
 app = Flask(__name__)
@@ -80,24 +80,27 @@ def hello():
 @app.route("/entity/<entity>", methods=['POST','PUT'])
 def update(entity):
     '''update the entities via this interface'''
-    myWorld[entity.key] = entity
-    return myWorld
+    flask_post_json()
+    myWorld.set(entity, request.data)
+    print("Entity type", type(myWorld.get(entity)))
+    return myWorld.get(entity)
 
 @app.route("/world", methods=['POST','GET'])    
 def world():
     '''you should probably return the world here'''
-    return myWorld
+    print(myWorld.world())
+    return myWorld.world()
 
 @app.route("/entity/<entity>")    
 def get_entity(entity):
     '''This is the GET version of the entity interface, return a representation of the entity'''
-    return myWorld[entity]
+    return myWorld.get(entity)
 
 @app.route("/clear", methods=['POST','GET'])
 def clear():
     '''Clear the world out!'''
     myWorld.clear()
-    return myWorld
+    return myWorld.world()
 
 if __name__ == "__main__":
     app.run()
