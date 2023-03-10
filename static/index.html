@@ -56,7 +56,10 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
 world = {};
 
 //XXX: TODO Make this prettier!
-function drawCircle(context,entity) {
+//Used solution from https://stackoverflow.com/questions/20526488/drawing-a-filled-circle-in-a-canvas-on-mouseclick
+// by users Davy Karlsson https://stackoverflow.com/users/2890414/davy-karlsson
+// and Stephan https://stackoverflow.com/users/363573/stephan
+function drawCircle(context, entity) {
     with(context) {
         beginPath();              
         lineWidth = 3;
@@ -65,8 +68,8 @@ function drawCircle(context,entity) {
         //moveTo(x,y);
         fillStyle = entity["colour"];
         strokeStyle = fillStyle;
-        arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);  
-        stroke();                                
+        arc(x, y, (entity["radius"]) ? entity["radius"] : 50, 0, 2.0 * Math.PI, false);  
+        fill();                                
     }
 }
 
@@ -144,7 +147,7 @@ function addEntity(entity, data) {
 var counter = 0;
 function addEntityWithoutName(data) {
     //var name = "X"+Math.floor((Math.random()*100)+1);
-    var name = "X"+(counter++)%100;
+    var name = "X"+(counter++)%500;
     addEntity(name,data);
 }
 
@@ -154,7 +157,7 @@ function addEntityWithoutName(data) {
 mouse = (function() {
     // Now this isn't the most popular way of doing OO in 
     // Javascript, but it relies on lexical scope and I like it
-    // This isn't 301 so I'm not totally bound to OO :)  <-- lol
+    // This isn't 301 so I'm not totally bound to OO :)
     var self;    
     self = {
         clicked: 0,
@@ -207,37 +210,37 @@ mouse = (function() {
             self.lasttouch = e;                                         
             return self.mousedown(e);
         },
-	touchend: function(e) {
-            var touch = (self.lasttouch)?self.lasttouch:e;
-            return self.mouseup(touch);
-	},
-	mousemove: function(e) {
-            e.preventDefault();
-            if (self.wasClicked(e)) {
-                var pos = getPosition(e);
-                var x = pos[0];
-                var y = pos[1];
-	        if (self.clicked != 0) {
-	            //self.squeakin(x,y);
-                    self.callListeners(self.mousedraggers,x,y,self.clicked,e);
-	        }
-                self.callListeners(self.mousemovers,x,y,self.clicked,e);
-            }            
-	},
-	touchmove: function(e) {
-            self.lasttouch = e;                                         
-            return self.mousemove(e);
-	},
-	// Install the mouse listeners
-	mouseinstall: function() {
-            canvas.addEventListener("mousedown",  self.mousedown, false);
-            canvas.addEventListener("mousemove",  self.mousemove, false);
-            canvas.addEventListener("mouseup",    self.mouseup, false);
-            canvas.addEventListener("mouseout",   self.mouseout, false);
-            canvas.addEventListener("touchstart", self.touchstart, false);
-            canvas.addEventListener("touchmove",  self.touchmove, false);
-            canvas.addEventListener("touchend",   self.touchend, false);
-	}
+        touchend: function(e) {
+                var touch = (self.lasttouch)?self.lasttouch:e;
+                return self.mouseup(touch);
+        },
+        mousemove: function(e) {
+                e.preventDefault();
+                if (self.wasClicked(e)) {
+                    var pos = getPosition(e);
+                    var x = pos[0];
+                    var y = pos[1];
+                if (self.clicked != 0) {
+                    //self.squeakin(x,y);
+                        self.callListeners(self.mousedraggers,x,y,self.clicked,e);
+                }
+                    self.callListeners(self.mousemovers,x,y,self.clicked,e);
+                }            
+        },
+        touchmove: function(e) {
+                self.lasttouch = e;                                         
+                return self.mousemove(e);
+        },
+        // Install the mouse listeners
+        mouseinstall: function() {
+                canvas.addEventListener("mousedown",  self.mousedown, false);
+                canvas.addEventListener("mousemove",  self.mousemove, false);
+                canvas.addEventListener("mouseup",    self.mouseup, false);
+                canvas.addEventListener("mouseout",   self.mouseout, false);
+                canvas.addEventListener("touchstart", self.touchstart, false);
+                canvas.addEventListener("touchmove",  self.touchmove, false);
+                canvas.addEventListener("touchend",   self.touchend, false);
+        }
     };
     // Force install!
     self.mouseinstall();
